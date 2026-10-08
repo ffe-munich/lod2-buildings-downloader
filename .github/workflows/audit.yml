@@ -18,7 +18,8 @@ jobs:
     container:
       image: python:3.14-trixie
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
       - name: Install uv
         uses: astral-sh/setup-uv@v4
