@@ -10,3 +10,5 @@ __pycache__/
 # gml files except those needed for testing
 *.gml
 !tests/data/*.gml
+
+.python-version
