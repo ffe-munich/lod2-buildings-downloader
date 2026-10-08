@@ -14,7 +14,6 @@ permissions:
 jobs:
   audit:
     name: Audit
-    needs: ruff
     runs-on: ubuntu-latest
     container:
       image: python:3.14-trixie
