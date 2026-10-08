@@ -1,0 +1,84 @@
+[project]
+name = "lod2-downloader-temp"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12,<3.15"
+dependencies = [
+    "beautifulsoup4>=4.12.0",
+    "citydpc",
+    "geopandas>=1.1.3",
+    "pandas>=3.0.1",
+    "requests>=2.33",
+    "urllib3>=2.7.0",
+]
+
+[project.optional-dependencies]
+orthophotos = [
+    "orthophotos-downloader>=1.0.1",
+]
+
+[dependency-groups]
+dev = [
+    "ipykernel>=7.2.0",
+    "pytest>=9.0.3",
+    "pytest-xdist>=3.8.0",
+    "ruff>=0.11.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build]
+sources = ["src"]
+
+[tool.hatch.build.targets.wheel]
+include = [
+    "lod2_buildings_downloader",
+    "lod2_buildings_downloader/data/cell_label_to_id_ST.csv",
+    "lod2_buildings_downloader/data/german_federal_states.geojson"
+]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "lod2_buildings_downloader",
+    "lod2_buildings_downloader/data/cell_label_to_id_ST.csv",
+    "lod2_buildings_downloader/data/german_federal_states.geojson"
+]
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.format]
+quote-style = "double"
+skip-magic-trailing-comma = false
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
+ignore = ["E501"]
+
+[tool.uv.sources]
+citydpc = { git = "https://github.com/RWTH-E3D/CityDPC.git", rev = "4ede6d737dd3f9ca1c50c67cdd495e7c99de58da" }
+
+[tool.uv.workspace]
+members = ["."]
+
+# Document explicitly: `dev` is installed by `uv sync` by default, `orthophotos` is opt-in
+# (uv install, `uv sync --extra orthophotos`).
+[tool.uv]
+default-groups = ["dev"]
+
+[tool.pytest.ini_options]
+# --dist loadscope groups tests by class onto one worker so per-class download fixtures run
+# once instead of hammering the state's download server from multiple workers in parallel.
+# Sidenote: xdist workers are separate processes that don't share class-scoped fixtures, so
+# without this each worker re-downloads and the concurrent requests might get rate-limited
+# leading to failing tests (HTTP 500 / truncated responses).
+addopts = "--dist loadscope"
+filterwarnings = [
+    "ignore:This process.*is multi-threaded.*fork:DeprecationWarning",
+]

@@ -1,0 +1,11 @@
+{
+    "python.testing.pytestArgs": [
+        "-n",
+        "auto",
+        "tests",
+        // switch on/off tests that require downloading data from the internet
+        // "--download"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true
+}
