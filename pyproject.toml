@@ -15,7 +15,7 @@ dependencies = [
 
 [project.optional-dependencies]
 orthophotos = [
-    "orthophotos-downloader>=1.0.1",
+    "orthophotos-downloader>=1.0.3",
 ]
 
 [dependency-groups]
