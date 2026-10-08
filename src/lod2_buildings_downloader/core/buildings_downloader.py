@@ -22,9 +22,7 @@ try:
 except ModuleNotFoundError as exc:
     if exc.name != "citydpc":
         raise
-    citydpc_install_url = (
-        "git+https://github.com/ffe-munich/CityDPC.git@main"
-    )
+    citydpc_install_url = "git+https://github.com/ffe-munich/CityDPC.git@main"
     raise ImportError(
         "CityDPC is required to use lod2-buildings-downloader. Install it with "
         f'`pip install "{citydpc_install_url}"` or `uv add "{citydpc_install_url}"`. '
