@@ -73,6 +73,11 @@ jobs:
           uv sync --locked --group dev --no-install-project
           uv pip install --python .venv/bin/python --no-deps dist/*.whl
 
+      - name: Install CityDPC
+        run: >-
+          uv pip install --python .venv/bin/python
+          git+https://github.com/ffe-munich/CityDPC.git@main
+
       - name: Verify installed package
         run: |
           .venv/bin/python - <<'PY'

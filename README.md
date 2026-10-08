@@ -21,6 +21,7 @@
   <summary>Table of Contents</summary>
   <ol>
     <li><a href="#about-the-project">About the project</a></li>
+    <li><a href="#prerequisites">Prerequisites</a></li>
     <li><a href="#getting-started">Getting started</a></li>
     <li><a href="#usage">Usage</a></li>
     <li>
@@ -50,7 +51,7 @@ interest, parses the building geometries, and returns structured `Building` obje
 roof surface data.
 
 The parsing of CityGML files is heavily powered by the work of the developers and maintainers
-from the [CitDPC](https://github.com/RWTH-E3D/CityDPC) project. So thanks for that!
+from the [CityDPC](https://github.com/ffe-munich/CityDPC) project. So thanks for that!
 
 This is a sibling project of [orthophotos-downloader](https://github.com/ffe-munich/orthophotos-downloader)
 and integrates directly with it via the `Building.download_orthophoto()` method, which instantly
@@ -59,9 +60,30 @@ downloads an image of the `Building` - especially usefull for use cases involvin
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
-## Getting started
+## Prerequisites
 
 This package requires Python ≥ 3.12.
+
+> [!IMPORTANT]
+> CityDPC is required at runtime but is not available from PyPI. Install it before installing the
+> downloader:
+>
+> ```sh
+> pip install "git+https://github.com/ffe-munich/CityDPC.git@main"
+> # or with uv
+> uv add "git+https://github.com/ffe-munich/CityDPC.git@main"
+> ```
+>
+> **Using uv?** Run the CityDPC `uv add` command first. It records CityDPC in your project's
+> dependencies and lockfile, so `--no-sync` is not needed for a normal user install. That warning
+> applies only to the separate developer setup below.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+## Getting started
+
+Ensure to read the [Prerequisites](#prerequisites) section and install the downloader:
 
 ```sh
 pip install lod2-buildings-downloader
@@ -118,29 +140,42 @@ for building in buildings:
    uv sync --group dev
    ```
 3. Optionally install the orthophotos extra along with the dev dependencies
-   ```sh
-   # requires pip>=25.1 for --group support
-   pip install -e ".[orthophotos]" --group dev
-   # or with uv
-   uv sync --group dev --extra orthophotos
-   ```
+  ```sh
+  # requires pip>=25.1 for --group support
+  pip install -e ".[orthophotos]" --group dev
+  # or with uv
+  uv sync --group dev --extra orthophotos
+  ```
+4. Install the CityDPC revision required by this project
+  ```sh
+  pip install "git+https://github.com/ffe-munich/CityDPC.git@main"
+  # or with uv
+  uv pip install "git+https://github.com/ffe-munich/CityDPC.git@main"
+  ```
+
+**Important for uv:** CityDPC is installed outside `uv.lock`. After installing it, environment-syncing
+commands such as `uv sync` or `uv run` without `--no-sync` can remove it. Run subsequent project
+commands with `uv run --no-sync ...`. Install optional extras before CityDPC.
 
 ### Tests
 
 The test suite uses pre-downloaded GML fixture files stored in `tests/data/` so no network
 access is required by default.
 
+Because CityDPC is installed separately from the uv lockfile, use `uv run --no-sync` to keep uv
+from removing it when running project commands.
+
 Run tests with these commands.
 ```sh
 # offline (default) — fast, no network required
 pytest
 # or with uv
-uv run pytest
+uv run --no-sync pytest
 
 # also run the full download pipeline against the live service
 pytest --download
 # or with uv
-uv run pytest --download
+uv run --no-sync pytest --download
 ```
 
 Alternatively, when using VSCode you can use the included [settings.json example](.vscode/settings.json.example) to configure the [Python Extension](https://marketplace.visualstudio.com/items?itemName=ms-python.python) with the Test Explorer integration and run / debug tests from there.
@@ -156,20 +191,20 @@ This project uses [Ruff](https://docs.astral.sh/ruff/) for linting and formattin
 
 ```sh
 # check for linting issues
-uv run ruff check
+uv run --no-sync ruff check
 
 # apply fixes if possible
-uv run ruff check --fix
+uv run --no-sync ruff check --fix
 ```
 
 #### Formatting
 
 ```sh
 # check formatting
-uv run ruff format --check .
+uv run --no-sync ruff format --check .
 
 # apply formatting
-uv run ruff format .
+uv run --no-sync ruff format .
 ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -197,4 +232,3 @@ request. You can also simply open an issue with the tag "enhancement".
 Distributed under the MIT License. See [`LICENSE.md`](./LICENSE) for more information.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-

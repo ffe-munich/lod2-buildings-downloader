@@ -9,16 +9,27 @@ from tempfile import TemporaryDirectory
 from typing import TYPE_CHECKING, Callable, Dict, Iterator, List, Optional, Union
 from uuid import uuid4
 
-import citydpc.core.object.surfacegml as citydpc_surfacegml
+try:
+    import citydpc.core.object.surfacegml as citydpc_surfacegml
+    from citydpc import Dataset, config
+    from citydpc.core.input.citygmlInput import load_buildings_from_xml_file
+    from citydpc.core.object import SurfaceConfig
+    from citydpc.core.object.address import CoreAddress
+    from citydpc.core.object.building import Building as CityDPCBuilding
+    from citydpc.core.object.building import BuildingPart
+    from citydpc.core.object.exceptions import SurfaceSplitDueToMultipleSurfaceMembers
+    from citydpc.logger import logger as citydpc_logger
+except ModuleNotFoundError as exc:
+    if exc.name != "citydpc":
+        raise
+    citydpc_install_url = "git+https://github.com/ffe-munich/CityDPC.git@main"
+    raise ImportError(
+        "CityDPC is required to use lod2-buildings-downloader. Install it with "
+        f'`pip install "{citydpc_install_url}"` or `uv add "{citydpc_install_url}"`. '
+        "See the README for details."
+    ) from exc
+
 import numpy as np
-from citydpc import Dataset, config
-from citydpc.core.input.citygmlInput import load_buildings_from_xml_file
-from citydpc.core.object import SurfaceConfig
-from citydpc.core.object.address import CoreAddress
-from citydpc.core.object.building import Building as CityDPCBuilding
-from citydpc.core.object.building import BuildingPart
-from citydpc.core.object.exceptions import SurfaceSplitDueToMultipleSurfaceMembers
-from citydpc.logger import logger as citydpc_logger
 from pyproj import Transformer
 from requests import get
 from requests.exceptions import RequestException
@@ -69,8 +80,9 @@ def _configure_citydpc() -> None:
     global _citydpc_configured
     if _citydpc_configured:
         return
+
     # set this threshold value to a lower value than the default to avoid removal of meaningful
-    # points; see: https://github.com/RWTH-E3D/CityDPC/issues/4
+    # points; see: https://github.com/ffe-munich/CityDPC
     log.info(
         "Setting distance between line and point to 0.001 to avoid removal of meaningful points."
     )
@@ -1003,7 +1015,6 @@ class BuildingsDownloaderBase(ABC):
         Returns:
             A list of Building objects extracted from the GML file.
         """
-
         # remove any parameters from kwargs that we set ourselves directly; otherwise they would be
         # passed twice to load_buildings_from_xml_file and raise a TypeError
         for param in ("dataset", "filepath", "allowed_surface_types"):
@@ -1224,6 +1235,7 @@ class BuildingsDownloaderBase(ABC):
             A list of Building objects for each tile that produced at least one building.
         """
         _configure_citydpc()
+
         gml_urls = self._get_gml_file_urls_for_area_of_interest()
         log.info(f"Found {len(gml_urls)} download URLs (tiles/archives) for the area of interest.")
 
@@ -1279,6 +1291,7 @@ class BuildingsDownloaderBase(ABC):
             A list of Building objects for each tile that produced at least one building.
         """
         _configure_citydpc()
+
         gml_urls = self._get_gml_file_urls_for_area_of_interest()
         log.info(f"Found {len(gml_urls)} download URLs (tiles/archives) for the area of interest.")
 
