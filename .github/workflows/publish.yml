@@ -1,0 +1,122 @@
+name: Publish to PyPI
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build distributions
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+
+      - name: Build distributions
+        run: uv build
+
+      - name: Upload distributions
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-distributions
+          path: |
+            dist/*.whl
+            dist/*.tar.gz
+          if-no-files-found: error
+
+  test:
+    name: Test wheel (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    needs: build
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version:
+          - '3.12'
+          - '3.13'
+          - '3.14'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Download distributions
+        uses: actions/download-artifact@v4
+        with:
+          name: python-distributions
+          path: dist
+
+      - name: Install test dependencies and wheel
+        run: |
+          uv sync --locked --group dev --no-install-project
+          uv pip install --python .venv/bin/python --no-deps dist/*.whl
+
+      - name: Verify installed package
+        run: |
+          .venv/bin/python - <<'PY'
+          from pathlib import Path
+          import sysconfig
+          import lod2_buildings_downloader
+
+          location = Path(lod2_buildings_downloader.__file__).resolve()
+          print(f"Testing installed package: {location}")
+          assert location.is_relative_to(Path(sysconfig.get_path("purelib")).resolve()), location
+          PY
+
+      - name: Run tests
+        run: |
+          .venv/bin/python -m pytest tests/ \
+            -n auto \
+            --dist loadscope \
+            --junitxml=test-results.xml \
+            -v
+        timeout-minutes: 30
+
+      - name: Upload JUnit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-report-python-${{ matrix.python-version }}
+          path: test-results.xml
+          if-no-files-found: warn
+          retention-days: 28
+
+  publish:
+    name: Publish to PyPI
+    runs-on: ubuntu-latest
+    needs: [build, test]
+    permissions:
+      id-token: write  # Required for trusted publishing
+
+    steps:
+      - name: Download tested distributions
+        uses: actions/download-artifact@v4
+        with:
+          name: python-distributions
+          path: dist
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
