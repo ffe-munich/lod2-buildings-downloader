@@ -84,7 +84,7 @@ uv add "lod2-buildings-downloader[orthophotos]"
 
 ```python
 from shapely.geometry import Polygon
-from lod2_buildings_downloader.core import BuildingsDownloaderBY
+from lod2_buildings_downloader import BuildingsDownloaderBY
 
 area = Polygon([(690000, 5334000), (690100, 5334000), (690100, 5334100), (690000, 5334100)])
 downloader = BuildingsDownloaderBY(area)
