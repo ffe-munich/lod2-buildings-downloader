@@ -1,7 +1,10 @@
 [project]
 name = "lod2-downloader-temp"
 version = "1.0.0"
-description = "Add your description here"
+authors = [{name = "Daniel Godin", email = "dgodin@ffe.de"},
+           {name = "Joachim Ferstl", email = "jferstl@ffe.de"},]
+
+description = "Python library for downloading and parsing LoD2 building data from German open-geodata services. Given an area of interest, it connects to the relevant services, retrieves the necessary files and returns structured Building objects."
 readme = "README.md"
 requires-python = ">=3.12,<3.15"
 dependencies = [
