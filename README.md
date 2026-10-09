@@ -6,7 +6,8 @@
 <h3 align="center">lod2-buildings-downloader</h3>
 
 [![PyPI version](https://img.shields.io/pypi/v/lod2-buildings-downloader.svg)](https://pypi.org/project/lod2-buildings-downloader/)
-[![License](https://img.shields.io/pypi/l/lod2-buildings-downloader.svg)](https://opensource.org/licenses/MIT)
+<!-- [![Python versions](https://img.shields.io/pypi/pyversions/lod2-buildings-downloader.svg)](https://pypi.org/project/lod2-buildings-downloader/) -->
+<!-- [![License](https://img.shields.io/pypi/l/lod2-buildings-downloader.svg)](https://opensource.org/licenses/MIT) -->
 
   <p align="center">
     Python library for downloading and parsing LoD2 building data from German open-geodata services. Given an area of interest, it connects to the relevant services, retrieves the necessary files and returns structured <code>Building</code> objects.
