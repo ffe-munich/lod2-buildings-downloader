@@ -55,7 +55,7 @@ interest, parses the building geometries, and returns structured `Building` obje
 roof surface data.
 
 The parsing of CityGML files is heavily powered by the work of the developers and maintainers
-from the [CityDPC](https://github.com/ffe-munich/CityDPC) project. So thanks for that!
+from the [CityDPC](https://github.com/RWTH-E3D/CityDPC) project. So thanks for that!
 
 This is a sibling project of [orthophotos-downloader](https://github.com/ffe-munich/orthophotos-downloader)
 and integrates directly with it via the `Building.download_orthophoto()` method, which instantly
