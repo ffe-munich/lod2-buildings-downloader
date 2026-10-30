@@ -55,32 +55,11 @@ interest, parses the building geometries, and returns structured `Building` obje
 roof surface data.
 
 The parsing of CityGML files is heavily powered by the work of the developers and maintainers
-from the [CityDPC](https://github.com/ffe-munich/CityDPC) project. So thanks for that!
+from the [CityDPC](https://github.com/RWTH-E3D/CityDPC) project. So thanks for that!
 
 This is a sibling project of [orthophotos-downloader](https://github.com/ffe-munich/orthophotos-downloader)
 and integrates directly with it via the `Building.download_orthophoto()` method, which instantly
 downloads an image of the `Building` - especially usefull for use cases involving computer vison or object detection.
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-## Prerequisites
-
-This package requires Python ≥ 3.12.
-
-> [!IMPORTANT]
-> CityDPC is required at runtime but is not available from PyPI. Install it before installing the
-> downloader:
->
-> ```sh
-> pip install "git+https://github.com/ffe-munich/CityDPC.git@main"
-> # or with uv
-> uv add "git+https://github.com/ffe-munich/CityDPC.git@main"
-> ```
->
-> **Using uv?** Run the CityDPC `uv add` command first. It records CityDPC in your project's
-> dependencies and lockfile, so `--no-sync` is not needed for a normal user install. That warning
-> applies only to the separate developer setup below.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -150,24 +129,11 @@ for building in buildings:
   # or with uv
   uv sync --group dev --extra orthophotos
   ```
-4. Install the CityDPC revision required by this project
-  ```sh
-  pip install "git+https://github.com/ffe-munich/CityDPC.git@main"
-  # or with uv
-  uv pip install "git+https://github.com/ffe-munich/CityDPC.git@main"
-  ```
-
-**Important for uv:** CityDPC is installed outside `uv.lock`. After installing it, environment-syncing
-commands such as `uv sync` or `uv run` without `--no-sync` can remove it. Run subsequent project
-commands with `uv run --no-sync ...`. Install optional extras before CityDPC.
 
 ### Tests
 
 The test suite uses pre-downloaded GML fixture files stored in `tests/data/` so no network
 access is required by default.
-
-Because CityDPC is installed separately from the uv lockfile, use `uv run --no-sync` to keep uv
-from removing it when running project commands.
 
 Run tests with these commands.
 ```sh

@@ -1,6 +1,6 @@
 [project]
 name = "lod2-buildings-downloader"
-version = "1.0.3"
+version = "1.0.4"
 authors = [{name = "Daniel Godin", email = "dgodin@ffe.de"},
            {name = "Joachim Ferstl", email = "jferstl@ffe.de"},]
 license = { text = "MIT License" }
@@ -18,6 +18,7 @@ readme = "README.md"
 requires-python = ">=3.12,<3.15"
 dependencies = [
     "beautifulsoup4>=4.12.0",
+    "citydpc==0.1.22",
     "geopandas>=1.1.3",
     "pandas>=3.0.1",
     "requests>=2.33",
@@ -86,7 +87,7 @@ default-groups = ["dev"]
 # Sidenote: xdist workers are separate processes that don't share class-scoped fixtures, so
 # without this each worker re-downloads and the concurrent requests might get rate-limited
 # leading to failing tests (HTTP 500 / truncated responses).
-addopts = "--dist loadscope"
+addopts = "-n auto -v --tb=auto --ignore=scripts/get_reference_data_for_test.py ./tests"
 filterwarnings = [
     "ignore:This process.*is multi-threaded.*fork:DeprecationWarning",
 ]
