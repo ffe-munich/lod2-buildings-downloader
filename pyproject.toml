@@ -87,7 +87,7 @@ default-groups = ["dev"]
 # Sidenote: xdist workers are separate processes that don't share class-scoped fixtures, so
 # without this each worker re-downloads and the concurrent requests might get rate-limited
 # leading to failing tests (HTTP 500 / truncated responses).
-addopts = "--dist loadscope"
+addopts = "-n auto -v --tb=auto --ignore=scripts/get_reference_data_for_test.py ./tests"
 filterwarnings = [
     "ignore:This process.*is multi-threaded.*fork:DeprecationWarning",
 ]
